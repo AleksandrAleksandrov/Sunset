@@ -1,10 +1,11 @@
 package com.aleksandr.aleksandrov.project.test.android.sunset;
 
+import android.animation.AnimatorSet;
+import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.graphics.drawable.ArgbEvaluator;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -63,7 +64,16 @@ public class SunsetFragment extends Fragment {
                 .setDuration(3000);
         sunsetSkyAnimator.setEvaluator(new ArgbEvaluator());
 
-        heightAnimator.start();
-        sunsetSkyAnimator.start();
+        ObjectAnimator nightSkyAnimator = ObjectAnimator
+                .ofInt(mSkyView, "backgroundColor", mSunsetSkyColor, mNightSkyColor)
+                .setDuration(1500);
+        nightSkyAnimator.setEvaluator(new ArgbEvaluator());
+
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet
+                .play(heightAnimator)
+                .with(sunsetSkyAnimator)
+                .before(nightSkyAnimator);
+        animatorSet.start();
     }
 }
