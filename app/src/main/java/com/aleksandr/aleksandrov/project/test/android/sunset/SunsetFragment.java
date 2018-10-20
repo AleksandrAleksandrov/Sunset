@@ -1,7 +1,6 @@
 package com.aleksandr.aleksandrov.project.test.android.sunset;
 
 import android.animation.AnimatorSet;
-import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -17,6 +16,9 @@ import android.view.animation.AccelerateInterpolator;
  */
 
 public class SunsetFragment extends Fragment {
+
+    private int mSunsetDuration = 3000;
+
     private View mSceneView;
     private View mSunView;
     private View mSkyView;
@@ -54,24 +56,14 @@ public class SunsetFragment extends Fragment {
 
         ObjectAnimator heightAnimator = ObjectAnimator
                 .ofFloat(mSunView, "y", sunYStart, sunYEnd)
-                .setDuration(3000);
+                .setDuration(mSunsetDuration);
         heightAnimator.setInterpolator(new AccelerateInterpolator());
-
-        ObjectAnimator sunsetSkyAnimator = ObjectAnimator
-                .ofInt(mSkyView, "backgroundColor", mBlueSkyColor, mSunsetSkyColor)
-                .setDuration(3000);
-        sunsetSkyAnimator.setEvaluator(new ArgbEvaluator());
-
-        ObjectAnimator nightSkyAnimator = ObjectAnimator
-                .ofInt(mSkyView, "backgroundColor", mSunsetSkyColor, mNightSkyColor)
-                .setDuration(1500);
-        nightSkyAnimator.setEvaluator(new ArgbEvaluator());
 
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet
                 .play(heightAnimator)
-                .with(sunsetSkyAnimator)
-                .before(nightSkyAnimator);
+                .with(AnimationUtil.animateColor(mSkyView, mSunsetDuration, mBlueSkyColor, mSunsetSkyColor))
+                .before(AnimationUtil.animateColor(mSkyView, 1500, mSunsetSkyColor, mNightSkyColor));
         animatorSet.start();
     }
 }
